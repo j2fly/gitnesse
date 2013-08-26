@@ -16,10 +16,17 @@ module Gitnesse
       return if feature_files.nil?
 
       feature_files.each do |feature_file|
-        feature_name    = File.basename(feature_file, ".feature")
-        feature_content = File.read(feature_file)
-        wiki_page       = @wiki.page(feature_name)
-        wiki_page       ||= @wiki.page("#{feature_name}.feature")
+        cuke_extension = 'feature'
+
+        feature_name_no_ext = File.basename(feature_file, ".#{cuke_extension}")
+
+        feature_path        = Pathname.new(File.split(feature_file)[0])
+        rel_feature_path    = feature_path.relative_path_from(Pathname.new(Gitnesse.configuration.target_directory))
+        feature_name        = rel_feature_path.join(feature_name_no_ext).to_s.gsub('/', '-')
+
+        feature_content     = File.read(feature_file)
+        wiki_page           = @wiki.page(feature_name)
+        wiki_page           ||= @wiki.page("#{feature_name}.#{cuke_extension}")
 
         if wiki_page
           update_wiki_page(wiki_page, feature_name, feature_content)

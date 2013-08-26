@@ -74,7 +74,7 @@ module Gitnesse
     puts "  Pushing features from #{Gitnesse.configuration.target_directory} to #{Gitnesse.configuration.repository_url}."
     Dir.mktmpdir do |tmp_dir|
       if clone_feature_repo(tmp_dir)
-        feature_files = Dir.glob("#{Gitnesse.configuration.target_directory}/*.feature")
+        feature_files = Dir.glob("#{Gitnesse.configuration.target_directory}/**/*.feature")
         Wiki.new(tmp_dir).load_feature_files(feature_files)
 
         # push the changes to the remote git
